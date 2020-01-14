@@ -22,6 +22,8 @@ public class JobData {
     private static Boolean isDataLoaded = false;
 
     private static ArrayList<HashMap<String, String>> allJobs;
+    public static ArrayList<HashMap<String, String>> copyAllJobs;
+
 
     /**
      * Fetch list of all values from loaded data,
@@ -35,13 +37,15 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
+
         ArrayList<String> values = new ArrayList<>();
 
-        for (HashMap<String, String> row : allJobs) {
+        for (HashMap<String, String> row : copyAllJobs) {
             String aValue = row.get(field);
 
             if (!values.contains(aValue)) {
                 values.add(aValue);
+                values.sort(String::compareToIgnoreCase);
             }
         }
 
@@ -53,7 +57,7 @@ public class JobData {
         // load data, if not already loaded
         loadData();
 
-        return allJobs;
+        return copyAllJobs;
     }
 
     /**
@@ -74,7 +78,7 @@ public class JobData {
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
-        for (HashMap<String, String> row : allJobs) {
+        for (HashMap<String, String> row : copyAllJobs) {
 
             String aValue = row.get(column).toLowerCase();
 
@@ -91,7 +95,7 @@ public class JobData {
         loadData();
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
-        for (HashMap<String, String> row : allJobs) {
+        for (HashMap<String, String> row : copyAllJobs) {
             for (String column : row.keySet()) {
                 String aValue = row.get(column).toLowerCase();
                 if (aValue.contains(value.toLowerCase()) && !jobs.contains(row)) {
@@ -137,6 +141,7 @@ public class JobData {
 
             // flag the data as loaded, so we don't do it twice
             isDataLoaded = true;
+            copyAllJobs = new ArrayList<>(allJobs);
 
         } catch (IOException e) {
             System.out.println("Failed to load job data");
